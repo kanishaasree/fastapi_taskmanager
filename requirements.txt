@@ -10,4 +10,7 @@ aiosqlite
 databases
 python-dotenv
 passlib
+uvicorn
+gunicorn
+
 
