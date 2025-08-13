@@ -1,0 +1,13 @@
+sqlmodel
+asyncpg
+pydantic
+python-jose
+python-multipart
+fastapi
+uvicorn
+sqlalchemy
+aiosqlite
+databases
+python-dotenv
+passlib
+
