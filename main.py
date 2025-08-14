@@ -70,10 +70,10 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["X-Process-Time"] = str(time.time() - start)
     return response
 
-@app.on_event("startup")
-async def on_startup():
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
+# @app.on_event("startup")
+# async def on_startup():
+#     async with engine.begin() as conn:
+#         await conn.run_sync(SQLModel.metadata.create_all)
 
 app.include_router(auth.router)
 app.include_router(tasks.router)
