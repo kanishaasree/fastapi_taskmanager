@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from typing import List
 from sqlmodel import select
@@ -12,7 +13,7 @@ router = APIRouter()
 @router.get("/tasks", response_model=List[TaskOut])
 async def list_tasks(
     session: AsyncSession = Depends(get_session),
-
+    current_user=Depends(get_current_user)
 ):
     result = await session.execute(select(Task))
     tasks = result.scalars().all()
@@ -22,16 +23,14 @@ async def list_tasks(
 async def create_task(
     task: CreateTask, 
     background_tasks: BackgroundTasks,
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    current_user=Depends(get_current_user)
 ):
-  
     new_task = Task(task_name=task.task_name, task_status=task.task_status)
     session.add(new_task)
     await session.commit()
     await session.refresh(new_task)
-    
     background_tasks.add_task(send_notification, task.task_name)
-
     return {"message": "Task created successfully", "task": new_task}
 
 @router.patch("/tasks/{task_id}", response_model=TaskOut)
@@ -39,7 +38,7 @@ async def update_task(
     task_id: int,
     task_update: TaskUpdate,
     session: AsyncSession = Depends(get_session),
-
+    current_user=Depends(get_current_user)
 ):
     result = await session.execute(select(Task).where(Task.task_id == task_id))
     db_task = result.scalar_one_or_none()
@@ -57,7 +56,7 @@ async def update_task(
 async def delete_task(
     task_id: int,
     session: AsyncSession = Depends(get_session),
-    
+    current_user=Depends(get_current_user)
 ):
     result = await session.execute(select(Task).where(Task.task_id == task_id))
     db_task = result.scalar_one_or_none()
