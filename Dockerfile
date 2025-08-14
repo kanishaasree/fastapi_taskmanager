@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y build-essential libpq-dev \
 
 COPY . .
 
-EXPOSE 80
+EXPOSE 8080
 
 # Use Gunicorn with Uvicorn workers; allow PORT override via $PORT
-CMD ["sh", "-c", "gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:${PORT:-80} --workers 4 --log-level info"]
+CMD ["sh", "-c", "gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:${PORT:-8080} --workers 4 --log-level info"]
